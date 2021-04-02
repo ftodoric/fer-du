@@ -10,8 +10,7 @@ def stable_softmax(x):
 
 def sigma_P(y, s):
     # binary classification - classes: 0 and 1
-
-    return np.exp(s)**(y) / (1 + np.exp(s))
+    return np.exp(s) ** y / (1 + np.exp(s))
 
 
 def binlogreg_train(X, Y_):
@@ -25,9 +24,10 @@ def binlogreg_train(X, Y_):
     """
 
     param_niter = 10
+    param_delta = 0.1
 
     w = np.random.randn(X.shape[1], 1)
-    b = 0
+    b = np.zeros((1, X.shape[0]))
 
     # grad descent (param_niter number of iterations)
     for i in range(param_niter):
@@ -42,9 +42,22 @@ def binlogreg_train(X, Y_):
 
         # dijagnostički ispis
         if i % 10 == 0:
-            print("iteration {}: loss {}".format(i, loss))
+            pass
+        print("iteration {}: loss {}".format(i, loss))
 
         # loss derivations by scores - Nx1
+        iverson = 1 * (probs > 0.5)
+        dL_ds = probs - iverson
+
+        # parameters gradients
+        grad_w = 1 / len(X) * np.dot(np.transpose(dL_ds), X)
+        print(grad_w)
+        grad_b = 1 / len(X) * np.transpose(dL_ds)
+        print(grad_b)
+
+        # update parameters
+        w += -param_delta * np.transpose(grad_w)
+        b += -param_delta * np.transpose(grad_b)
 
 
 # MAIN
