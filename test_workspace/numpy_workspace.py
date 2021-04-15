@@ -3,4 +3,4 @@ import numpy as np
 vec = np.random.randn(2, 3)
 
 print(vec)
-print(vec[1, :])
+print(np.sum(vec, axis=0))

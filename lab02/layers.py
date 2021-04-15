@@ -254,8 +254,8 @@ class ReLU(Layer):
           ndarray of shape (N, C, H, W).
         """
         input_grads = np.maximum(self.inputs, 0)
-        input_grads[np.nonzero(input_grads > 0)
-                    ] = grads[np.nonzero(input_grads > 0)]
+        indexes_of_positives = np.nonzero(input_grads > 0)
+        input_grads[indexes_of_positives] = grads[indexes_of_positives]
         return input_grads
 
 
@@ -277,7 +277,7 @@ class SoftmaxCrossEntropyWithLogits():
           because then learning rate and weight decay won't depend on batch size.
 
         """
-        y_pred = np.zeros(x.shape)
+        """ y_pred = np.zeros(x.shape)
         for i, sample in enumerate(x):
             y_pred[i] = self.softmax(sample)
 
@@ -290,7 +290,9 @@ class SoftmaxCrossEntropyWithLogits():
 
         avg_loss /= N
 
-        return -avg_loss
+        return -avg_loss """
+
+        return np.mean(np.log(np.sum(np.exp(x), axis=1)) - np.sum(x * y, axis=1))
 
     def backward_inputs(self, x, y):
         """
