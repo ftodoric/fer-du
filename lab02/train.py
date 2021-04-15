@@ -8,7 +8,7 @@ import nn
 import layers
 
 DATA_DIR = Path(__file__).parent / 'datasets' / 'MNIST'
-SAVE_DIR = Path(__file__).parent / 'out'
+SAVE_DIR = Path(__file__).parent / 'out_task1'
 
 config = {}
 config['max_epochs'] = 1

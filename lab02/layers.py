@@ -207,7 +207,7 @@ class FC(Layer):
           An ndarray of shape (N, num_outputs)
         """
         self.inputs = inputs
-        return np.dot(inputs, np.transpose(self.weights)) + self.bias
+        return inputs @ self.weights.T + self.bias
 
     def backward_inputs(self, grads):
         """
@@ -216,7 +216,7 @@ class FC(Layer):
         Returns:
           An ndarray of shape (N, num_inputs)
         """
-        return np.dot(grads, self.weights)
+        return grads @ self.weights
 
     def backward_params(self, grads):
         """
@@ -225,7 +225,7 @@ class FC(Layer):
         Returns:
           List of params and gradient pairs.
         """
-        grad_weights = np.dot(np.transpose(grads), self.inputs)
+        grad_weights = np.transpose(grads) @ self.inputs
         grad_bias = np.copy(np.sum(grads, 0))
         return [[self.weights, grad_weights], [self.bias, grad_bias], self.name]
 
