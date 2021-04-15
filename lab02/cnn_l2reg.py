@@ -13,7 +13,7 @@ from torch import nn
 from torch.optim import SGD
 from torch.utils.data import DataLoader
 
-MAX_EPOCHS = 8
+MAX_EPOCHS = 2
 BATCH_SIZE = 50
 WEIGHT_DECAY = 1e-2
 
@@ -142,11 +142,8 @@ class CNN_L2(nn.Module):
         x_valid = torch.tensor(x_valid)
         y_valid = torch.tensor(y_valid)
 
-        optimizer = SGD([
-            {"params": [*self.conv_1.parameters(),
-                        *self.conv_2.parameters(),
-                        *self.fc_1.parameters(),
-                        *self.fc_logits.parameters()], "weight_decay": regularization_factor}], lr=1e-2)
+        optimizer = SGD(self.parameters(), lr=1e-2,
+                        weight_decay=regularization_factor)
 
         draw_conv_filters(0, self.conv_1)
 
