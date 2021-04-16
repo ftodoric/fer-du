@@ -13,7 +13,7 @@ from torch import nn
 from torch.optim import SGD
 from torch.utils.data import DataLoader
 
-MAX_EPOCHS = 2
+MAX_EPOCHS = 8
 BATCH_SIZE = 50
 WEIGHT_DECAY = 1e-2
 
@@ -123,32 +123,32 @@ class CNN_L2(nn.Module):
     def predict(self, x):
         return torch.argmax(self.forward(x))
 
-    @staticmethod
-    def loss(x, y):
-        sumlog = torch.log(torch.sum(torch.exp(x), dim=1))
-        mulsum = torch.sum(x * y, dim=1)
+    def loss(self, x, y):
+        log_sum = torch.log(torch.sum(torch.exp(x), dim=1))
+        sum_mul = torch.sum(x * y, dim=1)
 
-        return torch.mean(sumlog - mulsum)
-
-    def get_val_losses(self, x, y):
-        return val_losses.append(float(self.loss(self.forward(x).clone().detach(), y)))
+        return torch.mean(log_sum - sum_mul)
 
     def get_val_losses(self, x, y):
         return float(self.loss(self.forward(x).clone().detach(), y))
 
     def train(self, x, y, x_valid, y_valid, regularization_factor):
+        # Make tensors
         x = torch.tensor(x)
         y = torch.tensor(y)
         x_valid = torch.tensor(x_valid)
         y_valid = torch.tensor(y_valid)
 
+        # Set optimizer with weight decay
         optimizer = SGD(self.parameters(), lr=1e-2,
                         weight_decay=regularization_factor)
 
+        # Draw a filter
         draw_conv_filters(0, self.conv_1)
 
         losses = list()
         validation_losses = list()
+        # Iterate through epochs
         for i in range(1, MAX_EPOCHS+1):
             print("Epoch: {}".format(i))
 
@@ -158,21 +158,26 @@ class CNN_L2(nn.Module):
 
             batches_loss = list()
             for (x_batch, y_batch) in zip(x_batches, y_batches):
+                # Calculate loss
                 loss = self.loss(self.forward(x_batch), y_batch)
                 print("Loss: {}".format(float(loss)))
 
-                # Save loss
+                # Save batch loss
                 batches_loss.append(float(loss))
 
+                # Calculate loss gradient and update model parameters
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
 
+            # Save average epoch loss
             losses.append(np.mean(batches_loss))
             validation_losses.append(self.get_val_losses(x_valid, y_valid))
 
+            # Draw a filter
             draw_conv_filters(i, self.conv_1)
 
+        # Plot train and validation set losses
         epochs = [i for i in range(MAX_EPOCHS)]
         plt.plot(epochs,
                  losses,
