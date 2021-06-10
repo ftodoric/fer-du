@@ -1,14 +1,19 @@
 from pathlib import Path
 
 
-def test(a, z):
-    print(a)
-    print(z)
+class Car:
+    def __init__(self, brand: str):
+        self._brand = brand
+
+    @property
+    def brand(self): return self._brand
+
+    def drive(self):
+        print(self.brand)
+
+    def __repr__(self):
+        return repr((self._brand, self._brand))
 
 
-WEIGHT_DECAY = 1e-3
-SAVE_DIR = Path(__file__).parent / 'out_task3' / \
-    'lambda_{:.3f}'.format(WEIGHT_DECAY)
-
-
-print(SAVE_DIR)
+car = Car("audi")
+print(car)
