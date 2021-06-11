@@ -20,7 +20,7 @@ class LSTM(torch.nn.Module):
         # RNN layers
         self.__rnn1 = torch.nn.LSTM(300, 150,
                                     num_layers=2, batch_first=False)
-        self.__rnn2 = torch.nn.LSTM(150, 150,
+        self.__rnn2 = torch.nn.LSTM(300, 150,
                                     num_layers=2, batch_first=False)
 
         # FC layers
@@ -46,7 +46,7 @@ class LSTM(torch.nn.Module):
         hidden = None
 
         y, hidden = self.__rnn1(x, hidden)
-        y, hidden = self.__rnn2(y, hidden)
+        y, hidden = self.__rnn2(x, hidden)
 
         # Last output
         y = y[-1]

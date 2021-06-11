@@ -1,6 +1,5 @@
 import torch
 
-embedding = torch.nn.Embedding(10, 3)
 x = torch.FloatTensor([[1], [2], [3]])
-print(x)
-print(x.squeeze(-1))
+y = torch.FloatTensor([[1, 3, 3]])
+print(torch.sum((x @ y), 0))
